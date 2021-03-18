@@ -226,4 +226,34 @@
     </inertial>
   </link>
 
+  <!-- Gripper end effector joint -->
+  <joint name="rh_p12_rn_ee_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.125" rpy="0 0 0"/>
+    <parent link="rh_p12_rn_base"/>
+    <child link="rh_p12_rn_ee"/>
+  </joint>
+
+  <!-- Gripper end effector link -->
+  <link name="rh_p12_rn_ee">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01" />
+      </geometry>
+      <material name="red"/>
+     </visual>
+
+    <inertial>
+      <origin xyz="0 0 0" />
+      <mass value="1.0e-03" />
+      <inertia ixx="1.0e-03" ixy="0.0" ixz="0.0"
+               iyy="1.0e-03" iyz="0.0"
+               izz="1.0e-03" />
+    </inertial>
+  </link>
+
+  <gazebo reference="rh_p12_rn_ee">
+    <material>Gazebo/Red</material>
+  </gazebo>
+
 </robot>
