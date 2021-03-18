@@ -12,7 +12,7 @@
 
   <!-- Used for fixing robot to the UR3e -->
   <joint name="wrist_3_link_fixed" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0 0 0" rpy="0 0 1.5707"/>
     <parent link="wrist_3_link"/>
     <child link="rh_p12_rn_base"/>
   </joint>
