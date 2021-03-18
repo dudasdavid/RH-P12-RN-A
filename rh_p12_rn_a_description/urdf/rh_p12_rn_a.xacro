@@ -7,6 +7,8 @@
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
   <xacro:include filename="$(find rh_p12_rn_a_description)/urdf/rh_p12_rn_a.gazebo" />
 
+  <xacro:include filename="$(find rh_p12_rn_a_description)/urdf/inertia_tensors.urdf.xacro" />
+
   <!-- Import Rviz colors -->
   <xacro:include filename="$(find rh_p12_rn_a_description)/urdf/materials.xacro" />
 
@@ -42,6 +44,39 @@
     </inertial>
   </link>
 
+  <!-- Finger Motor Joint -->
+  <joint name="gripper" type="revolute">
+    <origin xyz="0 0.0 0" rpy="0 0 0" />
+    <axis xyz="1 0 0" />
+    <limit lower="0" upper="1.15" effort="4" velocity="5" />
+    <parent link="rh_p12_rn_base" />
+    <child link="gripper_link" />
+  </joint>
+
+  <transmission name="gripper_transmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="gripper">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="gripper_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link name="gripper_link">
+    <!--<inertial>
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <mass value="0.01" />
+    <inertia ixx="1.0e-6" ixy="0.0" ixz="0.0" iyy="1.0e-6" iyz="0.0" izz="1.0e-6" />
+    </inertial>
+    -->
+    <xacro:inertial_cuboid_with_pose mass="0.01" x_length="0.04" y_length="0.04" z_length="0.04" >
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+    </xacro:inertial_cuboid_with_pose> 
+    
+  </link>
+
   <!-- Joint -->
   <joint name="rh_p12_rn_a" type="revolute">
     <parent link="rh_p12_rn_base"/>
@@ -50,9 +85,21 @@
     <axis xyz="1 0 0"/>
     <limit velocity="6.5" effort="1000" lower="0.0" upper="1.1" />
     <dynamics damping="0.7"/>
+    <mimic joint="gripper" multiplier="1" offset="0"/>
   </joint>
 
-  <transmission name="tran_r1">
+  <gazebo>
+    <plugin name="mimic_joint_rh_p12_rn_a" filename="libroboticsgroup_gazebo_mimic_joint_plugin.so">
+      <joint>gripper</joint>
+      <mimicJoint>rh_p12_rn_a</mimicJoint>
+      <multiplier>1</multiplier>
+      <offset>0</offset>
+      <maxEffort>4</maxEffort>
+      <hasPID/>
+    </plugin>
+  </gazebo>
+
+  <!--transmission name="tran_r1">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="rh_p12_rn_a">
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
@@ -61,7 +108,7 @@
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
+  </transmission-->
 
   <!-- rh_p12_rn_r1 -->
   <link name="rh_p12_rn_r1">
@@ -96,9 +143,21 @@
     <axis xyz="-1 0 0"/>
     <limit velocity="6.5" effort="1000" lower="0.0" upper="1.0" />
     <dynamics damping="0.7"/>
+    <mimic joint="gripper" multiplier="0.909" offset="0"/>
   </joint>
 
-  <transmission name="tran_r2">
+  <gazebo>
+    <plugin name="mimic_joint_rh_r2" filename="libroboticsgroup_gazebo_mimic_joint_plugin.so">
+      <joint>gripper</joint>
+      <mimicJoint>rh_r2</mimicJoint>
+      <multiplier>0.909</multiplier>
+      <offset>0</offset>
+      <maxEffort>4</maxEffort>
+      <hasPID/>
+    </plugin>
+  </gazebo>
+
+  <!--transmission name="tran_r2">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="rh_r2">
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
@@ -107,7 +166,7 @@
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
+  </transmission-->
 
   <!-- rh_p12_rn_r2 -->
   <link name="rh_p12_rn_r2">
@@ -142,9 +201,21 @@
     <axis xyz="-1 0 0"/>
     <limit velocity="6.5" effort="1000" lower="0.0" upper="1.1" />
     <dynamics damping="0.7"/>
+    <mimic joint="gripper" multiplier="1" offset="0"/>
   </joint>
 
-  <transmission name="tran_l1">
+  <gazebo>
+    <plugin name="mimic_joint_rh_l1" filename="libroboticsgroup_gazebo_mimic_joint_plugin.so">
+      <joint>gripper</joint>
+      <mimicJoint>rh_l1</mimicJoint>
+      <multiplier>1</multiplier>
+      <offset>0</offset>
+      <maxEffort>4</maxEffort>
+      <hasPID/>
+    </plugin>
+  </gazebo>
+
+  <!--transmission name="tran_l1">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="rh_l1">
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
@@ -153,7 +224,7 @@
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
+  </transmission-->
 
   <!-- rh_p12_rn_l1 -->
   <link name="rh_p12_rn_l1">
@@ -188,9 +259,21 @@
     <axis xyz="1 0 0"/>
     <limit velocity="6.5" effort="1000" lower="0.0" upper="1.0" />
     <dynamics damping="0.7"/>
+    <mimic joint="gripper" multiplier="0.909" offset="0"/>
   </joint>
 
-  <transmission name="tran_l2">
+  <gazebo>
+    <plugin name="mimic_joint_rh_l2" filename="libroboticsgroup_gazebo_mimic_joint_plugin.so">
+      <joint>gripper</joint>
+      <mimicJoint>rh_l2</mimicJoint>
+      <multiplier>0.909</multiplier>
+      <offset>0</offset>
+      <maxEffort>4</maxEffort>
+      <hasPID/>
+    </plugin>
+  </gazebo>
+
+  <!--transmission name="tran_l2">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="rh_l2">
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
@@ -199,7 +282,7 @@
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
+  </transmission-->
 
   <!-- rh_p12_rn_l2 -->
   <link name="rh_p12_rn_l2">
