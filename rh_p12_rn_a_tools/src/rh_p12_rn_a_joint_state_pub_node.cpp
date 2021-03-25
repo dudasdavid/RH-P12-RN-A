@@ -39,11 +39,13 @@ void fillJointStateMsg(double value, sensor_msgs::JointState& msg)
   msg.name.push_back("rh_r2");
   msg.name.push_back("rh_l1");
   msg.name.push_back("rh_l2");
+  msg.name.push_back("gripper");
 
-  msg.position.push_back(value);
+  msg.position.push_back(value * (1.0/1.06));
+  msg.position.push_back(value * (1.0/1.1));
+  msg.position.push_back(value * (1.0/1.06));
   msg.position.push_back(value * (1.0/1.1));
   msg.position.push_back(value);
-  msg.position.push_back(value * (1.0/1.1));
 }
 
 void rhJointStateCb(const sensor_msgs::JointState::ConstPtr& msg)
@@ -70,7 +72,7 @@ int main(int argc, char **argv)
   ros::NodeHandle nh;
   ros::NodeHandle pnh("~");
 
-  ros::Subscriber joint_state_sub = nh.subscribe("joint_states", 5, rhJointStateCb);
+  ros::Subscriber joint_state_sub = nh.subscribe("/robotis/present_joint_states", 5, rhJointStateCb);
   g_joint_state_pub = nh.advertise<sensor_msgs::JointState>(pnh.param("target", std::string("joint_states")), 0);
 
   ros::spin();
