@@ -7,7 +7,7 @@
     <param name="init_file_path"           value="$(find rh_p12_rn_a_manager)/config/dxl_init.yaml"/>
     <param name="device_name"              value="/tmp/ttyUR"/>
     <!-- RH-P12-RN Manager -->
-    <node pkg="rh_p12_rn_a_manager" type="rh_p12_rn_a_manager" name="rh_p12_rn_a_manager" output="screen"/>
+    <node pkg="rh_p12_rn_a_manager" type="rh_p12_rn_a_manager" name="rh_p12_rn_a_manager" output="screen" respawn="true"/>
     <!-- RH-P12-RN GUI -->
     <node pkg="rh_p12_rn_a_gui" type="rh_p12_rn_a_gui" name="rh_p12_rn_a_gui" output="screen"/>
     <!-- RH-P12-RN Joint publisher -->
