@@ -37,7 +37,7 @@ class JointTrajectoryActionServer(object):
         self._result = FollowJointTrajectoryResult()
 
         # Control rate for gripper commands
-        self._control_rate = 50 # Hz
+        self._control_rate = 100 # Hz
 
         # Subscribe to gripper joint angle
         # ToDo: I might use the robotis topic instead
@@ -47,6 +47,8 @@ class JointTrajectoryActionServer(object):
         # Add publisher
         self._pub = rospy.Publisher('/gripper_gazebo_controller/command', JointTrajectory, queue_size=1)
         self._pub_robotis = rospy.Publisher('/robotis/direct/sync_write_item', SyncWriteItem, queue_size=5)
+        self._pub_robotis_config = rospy.Publisher('/robotis/sync_write_item', SyncWriteItem, queue_size=5)
+
         self._trajectory_command = JointTrajectory()
         self._trajectory_command.joint_names = ["gripper"]
         self._point = JointTrajectoryPoint()
@@ -56,12 +58,51 @@ class JointTrajectoryActionServer(object):
         self._goal_position_msg = SyncWriteItem()
         self._goal_position_msg.item_name = "goal_position"
         self._goal_position_msg.joint_name = ["gripper"]
+
+        # Robotis config
+        self._robotis_config_msg = SyncWriteItem()
+        self._robotis_config_msg.joint_name = ["gripper"]
         
         # Cooldwon tolerances
-        self.angle_threshold = 0.001 # angle tolerance
+        self.angle_threshold = 0.02 # angle tolerance
         self.time_threshold = 5 # sec
 
+        # send it periodically instead of one time during init, see main.
+        #self._set_gripper_parameters(pwm = 450, current = 600, velocity = 800)
+
         rospy.loginfo('Successful init')
+
+    def _set_gripper_parameters(self, pwm, current, velocity):
+        
+        self._robotis_config_msg.item_name = "operating_mode"
+        self._robotis_config_msg.value = [5] # current based position mode
+        self._pub_robotis_config.publish(self._robotis_config_msg)
+
+        time.sleep(0.1)
+
+        self._robotis_config_msg.item_name = "goal_pwm"
+        self._robotis_config_msg.value = [pwm]
+        self._pub_robotis_config.publish(self._robotis_config_msg)
+
+        time.sleep(0.1)
+
+        self._robotis_config_msg.item_name = "goal_current"
+        self._robotis_config_msg.value = [current]
+        self._pub_robotis_config.publish(self._robotis_config_msg)
+
+        time.sleep(0.1)
+
+        self._robotis_config_msg.item_name = "goal_velocity"
+        self._robotis_config_msg.value = [velocity]
+        self._pub_robotis_config.publish(self._robotis_config_msg)
+
+        time.sleep(0.1)
+
+        self._robotis_config_msg.item_name = "torque_enable"
+        self._robotis_config_msg.value = [1]
+        self._pub_robotis_config.publish(self._robotis_config_msg)
+
+
 
     def _update_feedback(self, cmd_point, jnt_names, cur_time):
         self._feedback.header.stamp = rospy.Duration.from_sec(rospy.get_time())
@@ -222,4 +263,10 @@ class JointTrajectoryActionServer(object):
 if __name__ == '__main__':
     rospy.init_node('gripper_interface')
     server = JointTrajectoryActionServer('gripper_robotis_controller')
-    rospy.spin()
+
+    rate = rospy.Rate(0.5) # 0.5Hz = 2sec
+    while not rospy.is_shutdown():
+        server._set_gripper_parameters(pwm = 1500, current = 400, velocity = 1500)
+        rate.sleep()
+
+    #rospy.spin()
