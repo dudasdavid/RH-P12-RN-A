@@ -169,8 +169,7 @@ class JointTrajectoryActionServer(object):
 
             # Publish value for ROBOTIS gripper
             #print(point.positions)
-            # ToDo: check ranges!
-            self._goal_position_msg.value = [point.positions[0]*1000]
+            self._goal_position_msg.value = [point.positions[0]*643]
             self._pub_robotis.publish(self._goal_position_msg)
 
             self._update_feedback(deepcopy(point), joint_names, now_from_start)
