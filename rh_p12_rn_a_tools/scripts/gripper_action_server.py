@@ -65,7 +65,7 @@ class JointTrajectoryActionServer(object):
         
         # Cooldwon tolerances
         self.angle_threshold = 0.02 # angle tolerance
-        self.time_threshold = 5 # sec
+        self.time_threshold = 3 # sec
 
         # send it periodically instead of one time during init, see main.
         #self._set_gripper_parameters(pwm = 450, current = 600, velocity = 800)
@@ -101,8 +101,6 @@ class JointTrajectoryActionServer(object):
         self._robotis_config_msg.item_name = "torque_enable"
         self._robotis_config_msg.value = [1]
         self._pub_robotis_config.publish(self._robotis_config_msg)
-
-
 
     def _update_feedback(self, cmd_point, jnt_names, cur_time):
         self._feedback.header.stamp = rospy.Duration.from_sec(rospy.get_time())
@@ -218,6 +216,11 @@ class JointTrajectoryActionServer(object):
             control_rate.sleep()
 
         result = False
+
+        # TODO: Should be more nice! I send result ASAP so RViz won't crash during cooldown...
+        self._result.error_code = self._result.SUCCESSFUL
+        self._as.set_succeeded(self._result)
+
         if abs(trajectory_points[-1].positions[0] - self._get_current_position(joint_names)[0]) > self.angle_threshold:
             rospy.loginfo("%s: There is an angle difference: %s and %s, cooldown started!" %
                       (self._action_name, str(trajectory_points[-1].positions[0]), str(self._get_current_position(joint_names)[0])))
@@ -254,8 +257,9 @@ class JointTrajectoryActionServer(object):
         else:
             rospy.loginfo("%s: Joint Trajectory Action Failed for gripper" % self._action_name)
 
-        self._result.error_code = self._result.SUCCESSFUL
-        self._as.set_succeeded(self._result)
+        # Result should be sent here after cooldown, but RViz crashes if cooldown isn't expired but group is changed in MoveIt
+        #self._result.error_code = self._result.SUCCESSFUL
+        #self._as.set_succeeded(self._result)
 
         
 
