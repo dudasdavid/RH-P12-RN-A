@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import rospy
 
@@ -103,17 +103,14 @@ class JointTrajectoryActionServer(object):
         self._pub_robotis_config.publish(self._robotis_config_msg)
 
     def _update_feedback(self, cmd_point, jnt_names, cur_time):
-        self._feedback.header.stamp = rospy.Duration.from_sec(rospy.get_time())
+        self._feedback.header.stamp = rospy.Time.from_sec(rospy.get_time())
         self._feedback.joint_names = jnt_names
         self._feedback.desired = cmd_point
         self._feedback.desired.time_from_start = rospy.Duration.from_sec(cur_time)
         self._feedback.actual.positions = self._get_current_position(jnt_names)
         self._feedback.actual.time_from_start = rospy.Duration.from_sec(cur_time)
-        self._feedback.error.positions = map(operator.sub,
-                                         self._feedback.desired.positions,
-                                         self._feedback.actual.positions
-                                        )
-        self._feedback.error.time_from_start = rospy.Duration.from_sec(cur_time)
+        self._feedback.error.positions = [self._feedback.desired.positions[0]-self._feedback.actual.positions[0]]
+        self._feedback.error.time_from_start = rospy.Time.from_sec(cur_time)
         self._as.publish_feedback(self._feedback)
 
     def _joint_states_cb(self, msg):
