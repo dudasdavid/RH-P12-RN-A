@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<launch>    
+    <param name="gazebo"                   value="false"    type="bool"/>
+    <param name="gazebo_robot_name"        value="rh_p12_rn_a"/>  
+    <param name="offset_file_path"         value="$(find rh_p12_rn_a_manager)/config/offset.yaml"/>
+    <param name="robot_file_path"          value="$(find rh_p12_rn_a_manager)/config/RH-P12-RN(A).robot"/>
+    <param name="init_file_path"           value="$(find rh_p12_rn_a_manager)/config/dxl_init.yaml"/>
+    <param name="device_name"              value="/tmp/ttyUR"/>
+
+    
+<!-- RH-P12-RN GUI -->
+    <node pkg="rh_p12_rn_a_gui" type="rh_p12_rn_a_gui" name="rh_p12_rn_a_gui" output="screen"/>
+    <!-- RH-P12-RN Joint publisher -->
+    <node pkg="rh_p12_rn_a_tools" type="rh_p12_rn_a_joint_state_pub_node" name="rh_p12_rn_a_joint_state_pub_node" output="screen"/>
+    <!-- RH-P12-RN Gripper action server -->
+    <node pkg="rh_p12_rn_a_tools" type="gripper_action_server.py" name="gripper_action_server" output="screen"/>
+
+</launch>

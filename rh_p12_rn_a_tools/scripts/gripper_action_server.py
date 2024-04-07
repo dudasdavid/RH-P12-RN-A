@@ -152,6 +152,7 @@ class JointTrajectoryActionServer(object):
             return
         rospy.loginfo("%s: Executing requested joint trajectory" %
                       (self._action_name,))
+        #print(trajectory_points)
         rospy.logdebug("Trajectory Points: {0}".format(trajectory_points))
         control_rate = rospy.Rate(self._control_rate)
 
@@ -204,8 +205,8 @@ class JointTrajectoryActionServer(object):
             self._pub.publish(self._trajectory_command)
 
             # Publish value for ROBOTIS gripper
-            #print(point.positions)
-            self._goal_position_msg.value = [point.positions[0]*643]
+            print(point.positions)
+            self._goal_position_msg.value = [int(point.positions[0])*698]
             self._pub_robotis.publish(self._goal_position_msg)
 
             self._update_feedback(deepcopy(point), joint_names, now_from_start)
@@ -226,8 +227,8 @@ class JointTrajectoryActionServer(object):
             while 1:
                 now = rospy.get_time()
                 if abs(trajectory_points[-1].positions[0] - self._get_current_position(joint_names)[0]) > self.angle_threshold:
-                    #rospy.loginfo("%s: There is still an angle difference: %s and %s, elapsed time: %s, waiting..." %
-                    #    (self._action_name, str(trajectory_points[-1].positions[0]), str(self._get_current_position(joint_names)[0]), str((now - cooldown_start))))
+                    rospy.loginfo("%s: There is still an angle difference: %s and %s, elapsed time: %s, waiting..." %
+                        (self._action_name, str(trajectory_points[-1].positions[0]), str(self._get_current_position(joint_names)[0]), str((now - cooldown_start))))
                     pass
                 else:
                     result = True
