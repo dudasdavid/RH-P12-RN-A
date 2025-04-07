@@ -1,21 +1,21 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-
-  <!-- some parameters -->
-  <xacro:property name="pi" value="3.141592654" />
+<robot name="rh_p12_rn_a" xmlns:xacro="http://wiki.ros.org/xacro">
 
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
-  <xacro:include filename="$(find rh_p12_rn_a_description)/urdf/rh_p12_rn_a.gazebo" />
+  <!-- <xacro:include filename="$(find rh_p12_rn_a_description)/urdf/rh_p12_rn_a.gazebo" /> -->
 
   <xacro:include filename="$(find rh_p12_rn_a_description)/urdf/inertia_tensors.urdf.xacro" />
 
   <!-- Import Rviz colors -->
   <xacro:include filename="$(find rh_p12_rn_a_description)/urdf/materials.xacro" />
 
+  <!-- Global reference link -->
+  <link name="world"/>
+
   <!-- Used for fixing robot to the UR3e -->
-  <joint name="wrist_3_link_fixed" type="fixed">
+  <joint name="world_fixed" type="fixed">
     <origin xyz="0 0 0" rpy="0 0 1.5707"/>
-    <parent link="wrist_3_link"/>
+    <parent link="world"/>
     <child link="rh_p12_rn_base"/>
   </joint>
 
@@ -53,7 +53,7 @@
     <child link="gripper_link" />
   </joint>
 
-  <transmission name="gripper_transmission">
+  <!-- <transmission name="gripper_transmission">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="gripper">
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
@@ -62,7 +62,7 @@
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
+  </transmission> -->
 
   <link name="gripper_link">
     <!--<inertial>
