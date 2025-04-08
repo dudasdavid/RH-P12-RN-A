@@ -183,7 +183,7 @@ def generate_launch_description():
     launchDescriptionObject.add_action(spawn_urdf_node)
     launchDescriptionObject.add_action(gz_bridge_node)
     launchDescriptionObject.add_action(robot_state_publisher_node)
-    #launchDescriptionObject.add_action(joint_state_broadcaster_spawner)
-    #launchDescriptionObject.add_action(joint_trajectory_controller_spawner)
+    launchDescriptionObject.add_action(joint_state_broadcaster_spawner)
+    launchDescriptionObject.add_action(joint_trajectory_controller_spawner)
 
     return launchDescriptionObject

@@ -1,27 +1,26 @@
-rh_p12_rn_a:
-  # Publish all joint states -----------------------------------
-  joint_state_controller:
-    type: joint_state_controller/JointStateController
-    publish_rate: 125  
-  
-  # Position Controllers ---------------------------------------
-  rh_p12_rn_a_position:
-    type: effort_controllers/JointPositionController
-    joint: rh_p12_rn_a
-    pid: {p: 7000.0, i: 0.1, d: 300.0}
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
 
-  rh_r2_position:
-    type: effort_controllers/JointPositionController
-    joint: rh_r2
-    pid: {p: 7000.0, i: 0.1, d: 300.0}
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
 
-  rh_l1_position:
-    type: effort_controllers/JointPositionController
-    joint: rh_l1
-    pid: {p: 7000.0, i: 0.1, d: 300.0}
+    gripper_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
 
-  rh_l2_position:
-    type: effort_controllers/JointPositionController
-    joint: rh_l2
-    pid: {p: 7000.0, i: 0.1, d: 300.0}
-
+gripper_controller:
+  ros__parameters:
+    use_sim_time: True
+    joints:
+      - rh_r1_joint
+    interface_name: position
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 50.0
+    action_monitor_rate: 20.0
+    constraints:
+      stopped_velocity_tolerance: 0.01
+      goal_time: 0.0
