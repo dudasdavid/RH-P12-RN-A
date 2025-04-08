@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- rh_p12_rn_a gripper -->
 
-<robot name="rh_p12_rn_a" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:macro name="rh_p12_rn_a_gripper" params="prefix">
 
