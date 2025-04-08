@@ -1,17 +1,20 @@
 <?xml version="1.0"?>
 <!-- rh_p12_rn_a gripper -->
-
 <robot name="rh_p12_rn_a" xmlns:xacro="http://www.ros.org/wiki/xacro">
-
-  <xacro:property name="prefix" default="" />
+  <xacro:arg name="use_sim" default="false" />
+  <xacro:arg name="prefix" default="" />
 
   <xacro:include filename="$(find rh_p12_rn_a_description)/urdf/materials.xacro" />
+  <xacro:include filename="$(find rh_p12_rn_a_description)/urdf/rh_p12_rn_a_gripper.xacro" />
   <xacro:include filename="$(find rh_p12_rn_a_description)/urdf/rh_p12_rn_a.gazebo" />
   <xacro:include filename="$(find rh_p12_rn_a_description)/urdf/ros2_control.xacro" />
 
-  <xacro:property
-    name="meshes_file_direction"
-    value="package://rh_p12_rn_a_description/meshes"/>
+  <xacro:rh_p12_rn_a_gripper prefix="$(arg prefix)" />
+
+  <xacro:rh_p12_rn_a_gazebo prefix="$(arg prefix)" />
+
+  <xacro:rh_p12_rn_a_system name="GazeboSystem" prefix="$(arg prefix)"/>
+
 
   <!-- Global reference link -->
   <link name="world"/>
@@ -20,210 +23,26 @@
   <joint name="world_fixed" type="fixed">
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <parent link="world"/>
-    <child link="${prefix}rh_p12_rn_base"/>
+    <child link="$(arg prefix)rh_p12_rn_base"/>
   </joint>
 
-  <!-- base -->
-  <link name="${prefix}rh_p12_rn_base">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="${meshes_file_direction}/base.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-    </collision>
-
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="${meshes_file_direction}/base.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-              <material name="grey">
-        <color rgba="0.2 0.2 0.2 1"/>
-      </material>
-    </visual>
-
-    <inertial>
-      <origin xyz="0.000 0.000 0.032" rpy="0 0 0"/>
-      <mass value="0.236"/>
-      <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001" />
-    </inertial>
-  </link>
-
-  <!-- Joint -->
-  <joint name="${prefix}rh_r1_joint" type="revolute">
-    <parent link="${prefix}rh_p12_rn_base"/>
-    <child link="${prefix}rh_p12_rn_r1"/>
-    <origin xyz="0.0 0.008 0.048" rpy="0 0 0"/>
-    <axis xyz="1 0 0"/>
-    <limit velocity="6.5" effort="1000" lower="-0.1" upper="1.1"/>
-    <dynamics damping="0.7"/>
-  </joint>
-
-  <!-- rh_p12_rn_r1 -->
-  <link name="${prefix}rh_p12_rn_r1">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="${meshes_file_direction}/r1.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-    </collision>
-
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="${meshes_file_direction}/r1.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-              <material name="grey">
-        <color rgba="0.2 0.2 0.2 1"/>
-      </material>
-    </visual>
-
-    <inertial>
-      <origin xyz="0.000 0.034 0.004" rpy="0 0 0"/>
-      <mass value="0.068"/>
-      <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001" />
-    </inertial>
-  </link>
-
-  <!-- Right Joint 2 -->
-  <joint name="${prefix}rh_r2" type="revolute">
-    <parent link="${prefix}rh_p12_rn_r1"/>
-    <child link="${prefix}rh_p12_rn_r2"/>
-    <origin xyz="0.0 0.0493634 0.0285" rpy="0 0 0"/>
-    <axis xyz="-1 0 0"/>
-    <limit velocity="6.5" effort="1000" lower="0.0" upper="1.0" />
-    <dynamics damping="0.7"/>
-    <mimic joint="${prefix}rh_r1_joint" multiplier="1"/>
-  </joint>
-
-  <!-- rh_p12_rn_r2 -->
-  <link name="${prefix}rh_p12_rn_r2">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="${meshes_file_direction}/r2.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-    </collision>
-
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="${meshes_file_direction}/r2.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-              <material name="grey">
-        <color rgba="0.2 0.2 0.2 1"/>
-      </material>
-    </visual>
-
-    <inertial>
-      <origin xyz="0.000 0.006 0.011" rpy="0 0 0"/>
-      <mass value="0.022"/>
-      <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001" />
-    </inertial>
-  </link>
-
-  <!-- Left Joint 1 -->
-  <joint name="${prefix}rh_l1" type="revolute">
-    <parent link="${prefix}rh_p12_rn_base"/>
-    <child link="${prefix}rh_p12_rn_l1"/>
-    <origin xyz="0.0 -0.008 0.048" rpy="0 0 0"/>
-    <axis xyz="-1 0 0"/>
-    <limit velocity="6.5" effort="1000" lower="-0.1" upper="1.1" />
-    <dynamics damping="0.7"/>
-    <mimic joint="${prefix}rh_r1_joint" multiplier="1"/>
-  </joint>
-
-  <!-- rh_p12_rn_l1 -->
-  <link name="${prefix}rh_p12_rn_l1">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="${meshes_file_direction}/l1.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-    </collision>
-
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="${meshes_file_direction}/l1.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-              <material name="grey">
-        <color rgba="0.2 0.2 0.2 1"/>
-      </material>
-    </visual>
-
-    <inertial>
-      <origin xyz="0.000 -0.034 0.004" rpy="0 0 0"/>
-      <mass value="0.068"/>
-      <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001" />
-    </inertial>
-  </link>
-
-  <!-- Left Joint 2 -->
-  <joint name="${prefix}rh_l2" type="revolute">
-    <parent link="${prefix}rh_p12_rn_l1"/>
-    <child link="${prefix}rh_p12_rn_l2"/>
-    <origin xyz="0.0 -0.0493634 0.0285" rpy="0 0 0"/>
-    <axis xyz="1 0 0"/>
-    <limit velocity="6.5" effort="1000" lower="0.0" upper="1.0" />
-    <dynamics damping="0.7"/>
-    <mimic joint="${prefix}rh_r1_joint" multiplier="1"/>
-  </joint>
-
-  <!-- rh_p12_rn_l2 -->
-  <link name="${prefix}rh_p12_rn_l2">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="${meshes_file_direction}/l2.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-    </collision>
-
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="${meshes_file_direction}/l2.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-              <material name="grey">
-        <color rgba="0.2 0.2 0.2 1"/>
-      </material>
-    </visual>
-
-    <inertial>
-      <origin xyz="0.000 -0.006 0.011" rpy="0 0 0"/>
-      <mass value="0.022"/>
-      <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001" />
-    </inertial>
-  </link>
-
-  <!-- Gripper end effector joint -->
-  <joint name="${prefix}rh_p12_rn_ee_joint" type="fixed">
-    <origin xyz="0.0 0.0 0.125" rpy="0 0 0"/>
-    <parent link="${prefix}rh_p12_rn_base"/>
-    <child link="${prefix}rh_p12_rn_ee"/>
-  </joint>
-
-  <!-- Gripper end effector link -->
-  <link name="${prefix}rh_p12_rn_ee">
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="0.01 0.01 0.01" />
-      </geometry>
-      <material name="red"/>
-     </visual>
-
-    <inertial>
-      <origin xyz="0 0 0" />
-      <mass value="1.0e-03" />
-      <inertia ixx="1.0e-03" ixy="0.0" ixz="0.0"
-               iyy="1.0e-03" iyz="0.0"
-               izz="1.0e-03" />
-    </inertial>
-  </link>
-
-  <gazebo reference="rh_p12_rn_ee">
-    <material>Gazebo/Red</material>
+  <gazebo>
+    <plugin
+        filename="gz-sim-joint-state-publisher-system"
+        name="gz::sim::systems::JointStatePublisher">
+        <topic>joint_states</topic>
+        <joint_name>$(arg prefix)rh_r1_joint</joint_name>
+        <joint_name>$(arg prefix)rh_r2</joint_name>
+        <joint_name>$(arg prefix)rh_l1</joint_name>
+        <joint_name>$(arg prefix)rh_l2</joint_name>
+    </plugin>
   </gazebo>
+
+  <gazebo>
+    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>$(find rh_p12_rn_a_gazebo)/config/position_controller.yaml</parameters>
+    </plugin>
+  </gazebo>
+
 
 </robot>
