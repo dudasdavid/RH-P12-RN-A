@@ -1,52 +1,60 @@
 <?xml version="1.0"?>
-<robot>
 
-  <!-- ros_control plugin -->
-  <!--gazebo>
-    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>/rh_p12_rn_a</robotNamespace>
-      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
-      <legacyModeNS>true</legacyModeNS>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:property name="prefix" default="" />
+
+  <xacro:macro name="SimpleTransmission" params="trans joint actuator">
+    <transmission name="${trans}">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${joint}">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${actuator}">
+        <mechanicalReduction>1</mechanicalReduction>
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+
+  <xacro:macro name="Link" params="reference">
+    <gazebo reference="${reference}">
+      <kp>1000000.0</kp>
+      <kd>100.0</kd>
+      <mu1>30.0</mu1>
+      <mu2>30.0</mu2>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.001</minDepth>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:Link reference="${prefix}rh_p12_rn_base"/>
+  <xacro:Link reference="${prefix}rh_p12_rn_r1"/>
+  <xacro:Link reference="${prefix}rh_p12_rn_r2"/>
+  <xacro:Link reference="${prefix}rh_p12_rn_l1"/>
+  <xacro:Link reference="${prefix}rh_p12_rn_l2"/>
+
+  <xacro:SimpleTransmission trans="${prefix}tran_r1" joint="${prefix}rh_r1_joint" actuator="${prefix}actuator1" />
+  <xacro:SimpleTransmission trans="${prefix}tran_r2" joint="${prefix}rh_r2" actuator="${prefix}actuator2" />
+  <xacro:SimpleTransmission trans="${prefix}tran_l1" joint="${prefix}rh_l1" actuator="${prefix}actuator3" />
+  <xacro:SimpleTransmission trans="${prefix}tran_l2" joint="${prefix}rh_l2" actuator="${prefix}actuator4" />
+
+  <gazebo>
+    <plugin
+        filename="gz-sim-joint-state-publisher-system"
+        name="gz::sim::systems::JointStatePublisher">
+        <topic>joint_states</topic>
+        <joint_name>${prefix}rh_r1_joint</joint_name>
+        <joint_name>${prefix}rh_r2</joint_name>
+        <joint_name>${prefix}rh_l1</joint_name>
+        <joint_name>${prefix}rh_l2</joint_name>
     </plugin>
-  </gazebo-->
-
-  <!-- World -->
-  <gazebo reference="world">
   </gazebo>
 
-  <!-- rh_p12_rn_base -->
-  <gazebo reference="rh_p12_rn_base">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <material>Gazebo/Grey</material>
-  </gazebo>
-
-  <!-- rh_p12_rn_r1 -->
-  <gazebo reference="rh_p12_rn_r1">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <material>Gazebo/Grey</material>
-  </gazebo>
-
-  <!-- rh_p12_rn_r2 -->
-  <gazebo reference="rh_p12_rn_r2">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <material>Gazebo/Grey</material>
-  </gazebo>
-
-  <!-- rh_p12_rn_l1 -->
-  <gazebo reference="rh_p12_rn_l1">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <material>Gazebo/Grey</material>
-  </gazebo>
-
-  <!-- rh_p12_rn_l2 -->
-  <gazebo reference="rh_p12_rn_l2">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <material>Gazebo/Grey</material>
+  <gazebo>
+    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>$(find rh_p12_rn_a_gazebo)/config/position_controller.yaml</parameters>
+    </plugin>
   </gazebo>
 
 </robot>
