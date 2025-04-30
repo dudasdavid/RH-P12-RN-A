@@ -41,8 +41,8 @@
       <child link="${prefix}rh_p12_rn_r1"/>
       <origin xyz="0.0 0.008 0.048" rpy="0 0 0"/>
       <axis xyz="1 0 0"/>
-      <limit velocity="6.5" effort="1000" lower="-0.1" upper="1.1"/>
-      <dynamics damping="0.7"/>
+      <limit velocity="1.0" effort="5" lower="-0.1" upper="1.1"/>
+      <dynamics damping="5.0"/>
     </joint>
 
     <!-- rh_p12_rn_r1 -->
@@ -77,8 +77,8 @@
       <child link="${prefix}rh_p12_rn_r2"/>
       <origin xyz="0.0 0.0493634 0.0285" rpy="0 0 0"/>
       <axis xyz="-1 0 0"/>
-      <limit velocity="6.5" effort="1000" lower="0.0" upper="1.0" />
-      <dynamics damping="0.7"/>
+      <limit velocity="1.0" effort="5" lower="-0.1" upper="1.1" />
+      <dynamics damping="5.0"/>
       <mimic joint="${prefix}rh_r1_joint" multiplier="1"/>
     </joint>
 
@@ -114,8 +114,8 @@
       <child link="${prefix}rh_p12_rn_l1"/>
       <origin xyz="0.0 -0.008 0.048" rpy="0 0 0"/>
       <axis xyz="-1 0 0"/>
-      <limit velocity="6.5" effort="1000" lower="-0.1" upper="1.1" />
-      <dynamics damping="0.7"/>
+      <limit velocity="1.0" effort="5" lower="-0.1" upper="1.1" />
+      <dynamics damping="5.0"/>
       <mimic joint="${prefix}rh_r1_joint" multiplier="1"/>
     </joint>
 
@@ -151,8 +151,8 @@
       <child link="${prefix}rh_p12_rn_l2"/>
       <origin xyz="0.0 -0.0493634 0.0285" rpy="0 0 0"/>
       <axis xyz="1 0 0"/>
-      <limit velocity="6.5" effort="1000" lower="0.0" upper="1.0" />
-      <dynamics damping="0.7"/>
+      <limit velocity="1.0" effort="5" lower="-0.1" upper="1.1" />
+      <dynamics damping="5.0"/>
       <mimic joint="${prefix}rh_r1_joint" multiplier="1"/>
     </joint>
 
